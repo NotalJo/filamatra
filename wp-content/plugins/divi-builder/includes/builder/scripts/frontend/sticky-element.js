@@ -454,7 +454,7 @@ class ETScriptStickyElement {
     const placeholderDomOffsets = getOffsets(this.getPlaceholder(), placeholderDomWidth, this.getPlaceholder().outerHeight());
 
     if (stickyStyleWidth) {
-      stickyStyles.width = stickyStyleWidth;
+      stickyStyles.width = isNumber(stickyStyleWidth) ? `${stickyStyleWidth}px` : stickyStyleWidth;
 
       // Set prop so `getFinalInlineStyleLeft()` below correctly calculate `left` with updated width.
       if (this.getProp('isSticky')) {
@@ -463,7 +463,7 @@ class ETScriptStickyElement {
     }
 
     if (stickyStyleMaxWidth) {
-      stickyStyles.maxWidth = stickyStyleMaxWidth;
+      stickyStyles.maxWidth = isNumber(stickyStyleMaxWidth) ? `${stickyStyleMaxWidth}px` : stickyStyleMaxWidth;
     }
 
     // No custom width is found: still need to check whether module width needs to be updated or not.
@@ -475,8 +475,8 @@ class ETScriptStickyElement {
       // Sticky and placeholder width on prop are equal but the sticky and placeholder DOM width
       // differs means browser event occurs causes sticky module width change.
       if (! hasCustomStickyWidth && stickyDomWidth !== placeholderDomWidth) {
-        stickyStyles.width = placeholderDomWidth;
-        stickyStyles.left = placeholderDomOffsets.left;
+        stickyStyles.width = `${placeholderDomWidth}px`;
+        stickyStyles.left  = isNumber(placeholderDomOffsets.left) ? `${placeholderDomOffsets.left}px` : placeholderDomOffsets.left;
 
         this.setProp('width', placeholderDomWidth);
         this.setProp('widthSticky', placeholderDomWidth);
@@ -495,7 +495,7 @@ class ETScriptStickyElement {
     const stickyStyleLeft = this.getFinalInlineStyleLeft();
 
     if (stickyStyleLeft) {
-      stickyStyles.left = stickyStyleLeft;
+      stickyStyles.left = isNumber(stickyStyleLeft) ? `${stickyStyleLeft}px` : stickyStyleLeft;
     }
 
     this.getProp('$selector').css(stickyStyles);
@@ -983,7 +983,7 @@ class ETScriptStickyElement {
         const top                 = isScrollLocationApp ? 0 + this.getOffset('top') : ETScriptWindowStore.scrollTop + this.getOffset('top');
 
         this.getProp('$selector').css({
-          top,
+          top: `${top}px`,
         });
       }
     }
@@ -1098,13 +1098,13 @@ class ETScriptStickyElement {
       if (willSticky && ! willPause) {
         if (this.isStickyScroll('top')) {
           this.getProp('$selector').css({
-            top: windowTopEdge, // equivalent to ETScriptWindowStore.scrollTop
+            top: `${windowTopEdge}px`, // equivalent to ETScriptWindowStore.scrollTop
           });
         }
 
         if (this.isStickyScroll('bottom')) {
           this.getProp('$selector').css({
-            top: windowBottomEdge - stickyHeight,
+            top: `${windowBottomEdge - stickyHeight}px`,
           });
         }
       }
@@ -1116,7 +1116,7 @@ class ETScriptStickyElement {
           const topWindowBottomLimitOffsetBottom = get(bottomLimit, 'offsets.bottom', 0) - this.getOffset('bottom', 'surrounding');
 
           this.getProp('$selector').css({
-            top: topWindowBottomLimitOffsetBottom - stickyHeight,
+            top: `${topWindowBottomLimitOffsetBottom - stickyHeight}px`,
           });
         }
 
@@ -1125,7 +1125,7 @@ class ETScriptStickyElement {
           const topWindowTopLimitOffsetTop = get(topLimit, 'offsets.top', 0) + this.getOffset('top', 'surrounding');
 
           this.getProp('$selector').css({
-            top: topWindowTopLimitOffsetTop,
+            top: `${topWindowTopLimitOffsetTop}px`,
           });
         }
       }
@@ -1390,12 +1390,12 @@ class ETScriptStickyElement {
         const imageHeight = $stickyModule.find(`img:nth(${imageIndex})`).height();
         const imageWidth = $stickyModule.find(`img:nth(${imageIndex})`).width();
         const imageInlineStyle = {
-          'height': imageHeight,
-          'width': imageWidth,
+          'height': `${imageHeight}px`,
+          'width': `${imageWidth}px`,
         };
 
         // Remove inline fixed height style once the image is loaded
-        $(this).css(imageInlineStyle).load(function() {
+        $(this).css(imageInlineStyle).on('load', function() {
           $(this).css({
             height: '',
             width: '',
@@ -1438,17 +1438,19 @@ class ETScriptStickyElement {
     // NOTE: position:fixed; is initially defined on `stickyStyles` using `css()` but position
     // opitions add `position: relative !important` by default so sticky elements need to use
     // much `position: fixed !important` via `css()`'s cssText` property
-    const stickyStyles = {
+    const widthStickyStyle = this.getProp('widthSticky');
+    const leftStickyStyle  = get(this.getProp('offsets'), 'left', 0);
+    const stickyStyles     = {
       zIndex: stickyZindex(),
-      width: this.getProp('widthSticky'),
-      left: get(this.getProp('offsets'), 'left', 0),
+      width: isNumber(widthStickyStyle) ? `${widthStickyStyle}px` : widthStickyStyle,
+      left: isNumber(leftStickyStyle) ? `${leftStickyStyle}px` : leftStickyStyle,
     };
 
     if (this.isStickyScroll('top')) {
       if (isScrollLocationApp) {
-        stickyStyles.top = 0 + this.getOffset('top');
+        stickyStyles.top = `${0 + this.getOffset('top')}px`;
       } else {
-        stickyStyles.top = ETScriptWindowStore.scrollTop + this.getOffset('top');
+        stickyStyles.top            = `${ETScriptWindowStore.scrollTop + this.getOffset('top')}px`;
         stickyStyles['will-change'] = 'top';
       }
 
@@ -1456,12 +1458,12 @@ class ETScriptStickyElement {
       stickyStyles.bottom = 'auto';
 
       // Some element might have margin-bottom style; reset it;
-      stickyStyles.marginTop = 0;
+      stickyStyles.marginTop = '0px';
     }
 
     if (this.isStickyScroll('bottom')) {
       if (isScrollLocationApp) {
-        stickyStyles.bottom = 0 + this.getOffset('bottom');
+        stickyStyles.bottom = `${0 + this.getOffset('bottom')}px`;
       } else {
         stickyStyles['will-change'] = 'top';
       }
@@ -1470,7 +1472,7 @@ class ETScriptStickyElement {
       stickyStyles.top = 'auto';
 
       // Some element might have margin-bottom style; reset it;
-      stickyStyles.marginBottom = 0;
+      stickyStyles.marginBottom = '0px';
     }
 
     // Determine if `position: relative` is set by builder by checking the value of
@@ -1527,15 +1529,15 @@ class ETScriptStickyElement {
 
         // Append final inline css property only if it returns valid value
         if (isNumber(finalStickyStyleLeft)) {
-          finalStickyStyle.left = finalStickyStyleLeft;
+          finalStickyStyle.left = `${finalStickyStyleLeft}px`;
         }
 
         if (hasValue(stickyStyleWidth)) {
-          finalStickyStyle.width = stickyStyleWidth;
+          finalStickyStyle.width = isNumber(stickyStyleWidth) ? `${stickyStyleWidth}px` : stickyStyleWidth;
         }
 
         if (hasValue(stickyStyleMaxWidth)) {
-          finalStickyStyle['max-width'] = stickyStyleMaxWidth;
+          finalStickyStyle['max-width'] = isNumber(stickyStyleMaxWidth) ? `${stickyStyleMaxWidth}px` : stickyStyleMaxWidth;
         }
 
         // Remove modified transition on final sticky styles
@@ -1557,11 +1559,11 @@ class ETScriptStickyElement {
           const relativePositionVerticalOffset = this.getRelativePositionOffset('vertical');
 
           if (isNumber(stickyStyles.top)) {
-            finalStickyStyle.top = stickyStyles.top + relativePositionVerticalOffset;
+            finalStickyStyle.top = `${stickyStyles.top + relativePositionVerticalOffset}px`;
           }
 
           if (isNumber(stickyStyles.bottom)) {
-            finalStickyStyle.bottom = stickyStyles.bottom + relativePositionVerticalOffset;
+            finalStickyStyle.bottom = `${stickyStyles.bottom + relativePositionVerticalOffset}px`;
           }
         }
 
@@ -1622,9 +1624,9 @@ class ETScriptStickyElement {
     const resumeStyle = {};
 
     if (this.isStickyScroll('bottom') && topLimit) {
-      resumeStyle.marginBottom = 0;
+      resumeStyle.marginBottom = '0px';
     } else if (this.isStickyScroll('top') && bottomLimit) {
-      resumeStyle.marginTop = 0;
+      resumeStyle.marginTop = '0px';
     }
 
     this.setProp('pauseScrollTop', false);
@@ -1697,12 +1699,12 @@ class ETScriptStickyElement {
       // Only if there's value to avoid jumping layout when exiting sticky state.
       // Immediately reset inline style that is added during endSticky.
       if (hasVerticalOffset) {
-        stickyStyles[originVertical]      = verticalOffset;
+        stickyStyles[originVertical]      = isNumber(verticalOffset) ? `${verticalOffset}px` : verticalOffset;
         finalStickyStyles[originVertical] = '';
       }
 
       if (hasHorizontalOffset) {
-        stickyStyles[originHorizontal]      = horizontalOffset;
+        stickyStyles[originHorizontal]      = isNumber(horizontalOffset) ? `${horizontalOffset}px` : horizontalOffset;
         finalStickyStyles[originHorizontal] = '';
       }
 

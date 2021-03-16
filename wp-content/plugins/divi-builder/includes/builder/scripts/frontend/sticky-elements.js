@@ -105,7 +105,7 @@ if (isVB || isBFB || isTB || isLBB) {
   ETScriptStickyStore.addSettingsChangeListener(onStickySettingsChange);
 } else {
   // Need to wait until document is ready to get correct offset values
-  $(document).ready(() => {
+  $(() => {
     forEach(ETScriptStickyStore.modules, (settings, id) => {
       // Create sticky element instance
       stickyInstances[id] = new ETScriptStickyElement(settings);

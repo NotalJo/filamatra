@@ -53,7 +53,7 @@
     $form.appendTo('.container');
 
     // Submit the form
-    $('#preview-data-submission').submit();
+    $('#preview-data-submission').trigger('submit');
   };
 
   // listen to data passed from builder

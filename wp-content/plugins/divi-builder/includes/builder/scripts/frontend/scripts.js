@@ -617,8 +617,7 @@ const _post_id = et_pb_custom.page_id;
               $et_slider.et_animation_running = false;
 
               $et_slider.trigger('simple_slider_after_move_to', { next_slide: $next_slide });
-
-              $(window).resize();
+              $(window).trigger('resize');
             });
           });
         }
@@ -877,7 +876,7 @@ const _post_id = et_pb_custom.page_id;
 
         var left = 0;
         $active_carousel_group.children().each(function() {
-          $(this).css({ position: 'absolute', left });
+          $(this).css({ position: 'absolute', left: `${left}px` });
           left += $(this).outerWidth(true);
         });
 
@@ -885,7 +884,7 @@ const _post_id = et_pb_custom.page_id;
         $('body').addClass('et-pb-is-sliding-carousel');
 
         // Deterimine number of carousel group item
-        const carousel_group_item_size   = $active_carousel_group.find('.et_pb_carousel_item').size();
+        const carousel_group_item_size   = $active_carousel_group.find('.et_pb_carousel_item').length;
         let carousel_group_item_progress = 0;
 
         if ('next' == direction) {
@@ -898,7 +897,7 @@ const _post_id = et_pb_custom.page_id;
           const next_items_end   = next_items_start + columns;
 
           $next_carousel_group = $('<div class="et-carousel-group next" style="display: none;left: 100%;position: absolute;top: 0;">').insertAfter($active_carousel_group);
-          $next_carousel_group.css({ width: $active_carousel_group.innerWidth() }).show();
+          $next_carousel_group.css({ width: `${$active_carousel_group.innerWidth()}px` }).show();
 
           // this is an endless loop, so it can decide internally when to break out, so that next_position
           // can get filled up, even to the extent of an element having both and current_ and next_ position
@@ -944,7 +943,7 @@ const _post_id = et_pb_custom.page_id;
 
           var left = 0;
           $next_carousel_group.children().each(function() {
-            $(this).css({ position: 'absolute', left });
+            $(this).css({ position: 'absolute', left: `${left}px` });
             left += $(this).outerWidth(true);
           });
 
@@ -992,7 +991,7 @@ const _post_id = et_pb_custom.page_id;
           });
 
           const next_left = $active_carousel_group.width() + parseInt($the_carousel_items.first().css('marginRight').slice(0, - 2));
-          $next_carousel_group.addClass('active').css({ position: 'absolute', top: 0, left: next_left });
+          $next_carousel_group.addClass('active').css({ position: 'absolute', top: '0px', left: `${next_left}px` });
           $next_carousel_group.animate({
             left: '0%',
           }, {
@@ -1027,7 +1026,7 @@ const _post_id = et_pb_custom.page_id;
           const prev_items_end   = prev_items_start - columns_span;
 
           $prev_carousel_group = $('<div class="et-carousel-group prev" style="display: none;left: 100%;position: absolute;top: 0;">').insertBefore($active_carousel_group);
-          $prev_carousel_group.css({ left: `-${$active_carousel_group.innerWidth()}`, width: $active_carousel_group.innerWidth() }).show();
+          $prev_carousel_group.css({ left: `-${$active_carousel_group.innerWidth()}px`, width: `${$active_carousel_group.innerWidth()}px` }).show();
 
           // this is an endless loop, so it can decide internally when to break out, so that next_position
           // can get filled up, even to the extent of an element having both and current_ and next_ position
@@ -1072,7 +1071,7 @@ const _post_id = et_pb_custom.page_id;
 
           var left = 0;
           $prev_carousel_group.children().each(function() {
-            $(this).css({ position: 'absolute', left });
+            $(this).css({ position: 'absolute', left: `${left}px` });
             left += $(this).outerWidth(true);
           });
 
@@ -1122,7 +1121,7 @@ const _post_id = et_pb_custom.page_id;
           });
 
           const prev_left = (- 1) * $active_carousel_group.width() - parseInt($the_carousel_items.first().css('marginRight').slice(0, - 2));
-          $prev_carousel_group.addClass('active').css({ position: 'absolute', top: 0, left: prev_left });
+          $prev_carousel_group.addClass('active').css({ position: 'absolute', top: '0px', left: `${prev_left}px` });
           $prev_carousel_group.animate({
             left: '0%',
           }, {
@@ -1167,7 +1166,7 @@ const _post_id = et_pb_custom.page_id;
       getOutsideVB('.et_audio_container').each(function() {
         const $this = jQuery(this);
 
-        if ($this.find('.mejs-container:first').length > 0) {
+        if ($this.find('.mejs-container').first().length > 0) {
           return;
         }
 
@@ -1175,7 +1174,7 @@ const _post_id = et_pb_custom.page_id;
       });
     }
 
-    $(document).ready(() => {
+    $(() => {
       /**
        * Provide event listener for plugins to hook up to.
        */
@@ -1215,9 +1214,9 @@ const _post_id = et_pb_custom.page_id;
       const $et_transparent_nav                           = $('.et_transparent_nav');
       const $et_pb_first_row                              = $('body.et_pb_pagebuilder_layout .et_pb_section:first-child');
       const $et_main_content_first_row                    = $('#main-content .container:first-child');
-      const $et_main_content_first_row_meta_wrapper       = $et_main_content_first_row.find('.et_post_meta_wrapper:first');
+      const $et_main_content_first_row_meta_wrapper       = $et_main_content_first_row.find('.et_post_meta_wrapper').first();
       const $et_main_content_first_row_meta_wrapper_title = $et_main_content_first_row_meta_wrapper.find('h1');
-      const $et_main_content_first_row_content            = $et_main_content_first_row.find('.entry-content:first');
+      const $et_main_content_first_row_content            = $et_main_content_first_row.find('.entry-content').first();
       const $et_single_post                               = $('body.single-post');
       let etRecalculateOffset                             = false;
       let et_header_height;
@@ -1330,10 +1329,10 @@ const _post_id = et_pb_custom.page_id;
           const originalGutter = $thisEl.data('original_gutter');
           const hoverGutter    = $thisEl.data('hover_gutter');
 
-          $thisEl.hover(() => {
+          $thisEl.on('mouseenter', () => {
             $thisEl.removeClass(`et_pb_gutters${originalGutter}`);
             $thisEl.addClass(`et_pb_gutters${hoverGutter}`);
-          }, () => {
+          }).on('mouseleave', () => {
             $thisEl.removeClass(`et_pb_gutters${hoverGutter}`);
             $thisEl.addClass(`et_pb_gutters${originalGutter}`);
           });
@@ -1499,13 +1498,13 @@ const _post_id = et_pb_custom.page_id;
         });
 
         // prevent attaching of any further actions on click
-        $et_post_gallery.find('a').unbind('click');
+        $et_post_gallery.find('a').off('click');
       }
 
       if (! isBlockLayoutPreview && ($et_lightbox_image.length > 0 || isBuilder)) {
         // prevent attaching of any further actions on click
-        $et_lightbox_image.unbind('click');
-        $et_lightbox_image.bind('click');
+        $et_lightbox_image.off('click');
+        $et_lightbox_image.on('click');
 
         window.et_pb_image_lightbox_init = function($et_lightbox_image) {
           // Delay the initialization if magnificPopup hasn't finished loading yet.
@@ -1578,7 +1577,7 @@ const _post_id = et_pb_custom.page_id;
         $the_portfolio.data('carouseling', true);
 
         $active_carousel_group.children().each(function() {
-          $(this).css({ width: item_width + 1, 'max-width': item_width, position: 'absolute', left: (item_width * ($(this).data('position') - 1)) });
+          $(this).css({ width: `${item_width + 1}px`, 'max-width': `${item_width}px`, position: 'absolute', left: `${(item_width * ($(this).data('position') - 1))}px` });
         });
 
         if ($arrow.hasClass('et-pb-arrow-next')) {
@@ -1592,7 +1591,7 @@ const _post_id = et_pb_custom.page_id;
           var active_carousel_width = $active_carousel_group.innerWidth();
 
           $next_carousel_group = $('<div class="et_pb_carousel_group next" style="display: none;left: 100%;position: absolute;top: 0;">').insertAfter($active_carousel_group);
-          $next_carousel_group.css({ width: active_carousel_width, 'max-width': active_carousel_width }).show();
+          $next_carousel_group.css({ width: `${active_carousel_width}px`, 'max-width': `${active_carousel_width}px` }).show();
 
           // this is an endless loop, so it can decide internally when to break out, so that next_position
           // can get filled up, even to the extent of an element having both and current_ and next_ position
@@ -1637,7 +1636,7 @@ const _post_id = et_pb_custom.page_id;
           $(sorted).show().appendTo($next_carousel_group);
 
           $next_carousel_group.children().each(function() {
-            $(this).css({ width: item_width, 'max-width': item_width, position: 'absolute', left: (item_width * ($(this).data('next_position') - 1)) });
+            $(this).css({ width: `${item_width}px`, 'max-width': `${item_width}px`, position: 'absolute', left: `${(item_width * ($(this).data('next_position') - 1))}px` });
           });
 
           $active_carousel_group.animate({
@@ -1646,7 +1645,7 @@ const _post_id = et_pb_custom.page_id;
             duration: slide_duration,
             complete() {
               $portfolio_items.find('.delayed_container_append').each(function() {
-                $(this).css({ width: item_width, 'max-width': item_width, position: 'absolute', left: (item_width * ($(this).data('next_position') - 1)) });
+                $(this).css({ width: `${item_width}px`, 'max-width': `${item_width}px`, position: 'absolute', left: `${(item_width * ($(this).data('next_position') - 1))}px` });
                 $(this).appendTo($next_carousel_group);
               });
 
@@ -1668,7 +1667,7 @@ const _post_id = et_pb_custom.page_id;
             },
           });
 
-          $next_carousel_group.addClass('active').css({ position: 'absolute', top: 0, left: '100%' });
+          $next_carousel_group.addClass('active').css({ position: 'absolute', top: '0px', left: '100%' });
           $next_carousel_group.animate({
             left: '0%',
           }, {
@@ -1710,7 +1709,7 @@ const _post_id = et_pb_custom.page_id;
           var active_carousel_width = $active_carousel_group.innerWidth();
 
           $prev_carousel_group = $('<div class="et_pb_carousel_group prev" style="display: none;left: 100%;position: absolute;top: 0;">').insertBefore($active_carousel_group);
-          $prev_carousel_group.css({ left: `-${active_carousel_width}`, width: active_carousel_width, 'max-width': active_carousel_width }).show();
+          $prev_carousel_group.css({ left: `-${active_carousel_width}px`, width: `${active_carousel_width}px`, 'max-width': `${active_carousel_width}px` }).show();
 
           // this is an endless loop, so it can decide internally when to break out, so that next_position
           // can get filled up, even to the extent of an element having both and current_ and next_ position
@@ -1754,7 +1753,7 @@ const _post_id = et_pb_custom.page_id;
           $(sorted).show().appendTo($prev_carousel_group);
 
           $prev_carousel_group.children().each(function() {
-            $(this).css({ width: item_width, 'max-width': item_width, position: 'absolute', left: (item_width * ($(this).data('prev_position') - 1)) });
+            $(this).css({ width: `${item_width}px`, 'max-width': `${item_width}px`, position: 'absolute', left: `${(item_width * ($(this).data('prev_position') - 1))}px` });
           });
 
           $active_carousel_group.animate({
@@ -1763,7 +1762,7 @@ const _post_id = et_pb_custom.page_id;
             duration: slide_duration,
             complete() {
               $portfolio_items.find('.delayed_container_append').reverse().each(function() {
-                $(this).css({ width: item_width, 'max-width': item_width, position: 'absolute', left: (item_width * ($(this).data('prev_position') - 1)) });
+                $(this).css({ width: `${item_width}px`, 'max-width': `${item_width}px`, position: 'absolute', left: `${(item_width * ($(this).data('prev_position') - 1))}px` });
                 $(this).prependTo($prev_carousel_group);
               });
 
@@ -1783,7 +1782,7 @@ const _post_id = et_pb_custom.page_id;
             },
           });
 
-          $prev_carousel_group.addClass('active').css({ position: 'absolute', top: 0, left: '-100%' });
+          $prev_carousel_group.addClass('active').css({ position: 'absolute', top: '0px', left: '-100%' });
           $prev_carousel_group.animate({
             left: '0%',
           }, {
@@ -1846,10 +1845,10 @@ const _post_id = et_pb_custom.page_id;
         const portfolio_item_height = portfolio_item_width * 0.75;
 
         if (carousel_mode) {
-          $portfolio_items.css({ height: portfolio_item_height });
+          $portfolio_items.css({ height: `${portfolio_item_height}px` });
         }
 
-        $the_portfolio_items.css({ height: portfolio_item_height });
+        $the_portfolio_items.css({ height: `${portfolio_item_height}px` });
 
         if (columns === $portfolio_items.data('portfolio-columns')) {
           return;
@@ -1938,18 +1937,18 @@ const _post_id = et_pb_custom.page_id;
 
             // swipe support
             $the_portfolio.on('swiperight', function() {
-              $(this).find('.et-pb-arrow-prev').click();
+              $(this).find('.et-pb-arrow-prev').trigger('click');
             });
             $the_portfolio.on('swipeleft', function() {
-              $(this).find('.et-pb-arrow-next').click();
+              $(this).find('.et-pb-arrow-next').trigger('click');
             });
 
-            $the_portfolio.hover(function() {
+            $the_portfolio.on('mouseenter', function() {
               $(this).addClass('et_carousel_hovered');
               if (typeof $(this).data('et_carousel_timer') !== 'undefined') {
                 clearInterval($(this).data('et_carousel_timer'));
               }
-            }, function() {
+            }).on('mouseleave', function() {
               $(this).removeClass('et_carousel_hovered');
               et_carousel_auto_rotate($(this));
             });
@@ -2122,13 +2121,13 @@ const _post_id = et_pb_custom.page_id;
             $the_portfolio   = $(`#${event.target.id}`);
 
             if (! $the_portfolio.find(`.et_pb_portfolio_filter a[data-category-slug="${params[0]}"]`).hasClass('active')) {
-              $the_portfolio.find(`.et_pb_portfolio_filter a[data-category-slug="${params[0]}"]`).click();
+              $the_portfolio.find(`.et_pb_portfolio_filter a[data-category-slug="${params[0]}"]`).trigger('click');
             }
 
             if (params[1]) {
               setTimeout(() => {
                 if (! $the_portfolio.find(`.et_pb_portofolio_pagination a.page-${params[1]}`).hasClass('active')) {
-                  $the_portfolio.find(`.et_pb_portofolio_pagination a.page-${params[1]}`).addClass('active').click();
+                  $the_portfolio.find(`.et_pb_portofolio_pagination a.page-${params[1]}`).addClass('active').trigger('click');
                 }
               }, 300);
             }
@@ -2218,13 +2217,13 @@ const _post_id = et_pb_custom.page_id;
           et_set_hash(this_portfolio_state);
         }
 
-        // init portfolio if .load event was fired already, wait for the window load otherwise.
+        // init portfolio if .on('load') event was fired already, wait for the window load otherwise.
         if (window.et_load_event_fired) {
           et_pb_filterable_portfolio_init();
         } else {
-          $(window).load(() => {
+          $(window).on('load', () => {
             et_pb_filterable_portfolio_init();
-          }); // End $(window).load()
+          }); // End $(window).on('load')
         }
       } /*  end if ( $et_pb_filterable_portfolio.length ) */
 
@@ -2323,7 +2322,7 @@ const _post_id = et_pb_custom.page_id;
 
               if ((page_to)) {
                 if (! $the_gallery.find(`.et_pb_gallery_pagination a.page-${page_to}`).hasClass('active')) {
-                  $the_gallery.find(`.et_pb_gallery_pagination a.page-${page_to}`).addClass('active').click();
+                  $the_gallery.find(`.et_pb_gallery_pagination a.page-${page_to}`).addClass('active').trigger('click');
                 }
               }
             });
@@ -2549,7 +2548,7 @@ const _post_id = et_pb_custom.page_id;
             const $et_pb_hash_el = $et_pb_tabs.find(`.et_pb_tabs_controls li a[href="#${hash_value}"]`);
 
             if ($et_pb_hash_el.length) {
-              $et_pb_hash_el.parent().click();
+              $et_pb_hash_el.parent().trigger('click');
             }
           }
         };
@@ -2574,11 +2573,11 @@ const _post_id = et_pb_custom.page_id;
             const $the_tabs  = $(`#${event.target.id}`);
             const active_tab = params[0];
             if (! $the_tabs.find('.et_pb_tabs_controls li').eq(active_tab).hasClass('et_pb_tab_active')) {
-              $the_tabs.find('.et_pb_tabs_controls li').eq(active_tab).click();
+              $the_tabs.find('.et_pb_tabs_controls li').eq(active_tab).trigger('click');
             }
           });
 
-          $et_pb_tabs_li.click(function() {
+          $et_pb_tabs_li.on('click', function() {
             const $this_el        = $(this);
             const $tabs_container = $this_el.closest('.et_pb_tabs').data('et_pb_simple_slider');
 
@@ -3109,7 +3108,7 @@ const _post_id = et_pb_custom.page_id;
           bg_height += top_window.jQuery('#et_pb_layout .inside').offset().top;
         }
 
-        $this.find('.et_parallax_bg').css({ height: bg_height });
+        $this.find('.et_parallax_bg').css({ height: `${bg_height}px` });
       };
 
       // Emulate CSS Parallax (background-attachment: fixed) effect via absolute image positioning
@@ -3155,10 +3154,10 @@ const _post_id = et_pb_custom.page_id;
         }
 
         $this_parallax.css({
-          width: $(window).width(),
-          height: $parallaxWindow.innerHeight() * heightMultiplier,
-          top: (parallaxWindowScrollTop - backgroundOffset) - parentOffsetTop,
-          left: 0 - parentOffset.left,
+          width: `${$(window).width()}px`,
+          height: `${$parallaxWindow.innerHeight() * heightMultiplier}px`,
+          top: `${(parallaxWindowScrollTop - backgroundOffset) - parentOffsetTop}px`,
+          left: `${0 - parentOffset.left}px`,
           backgroundAttachment: 'scroll',
         });
       };
@@ -3171,7 +3170,7 @@ const _post_id = et_pb_custom.page_id;
         }
 
         if ($section.hasClass('et_pb_section_parallax') && ! $section.children().hasClass('et_pb_parallax_css')) {
-          $.proxy(et_parallax_set_height, $section)();
+          et_parallax_set_height.bind($section)();
         }
         window.et_reinit_waypoint_modules();
       }
@@ -3415,13 +3414,13 @@ const _post_id = et_pb_custom.page_id;
 
           $et_contact_form.find('input[type=checkbox]').on('change', function() {
             const $checkbox       = $(this);
-            const $checkbox_field = $checkbox.siblings('input[type=text]:first');
+            const $checkbox_field = $checkbox.siblings('input[type=text]').first();
             const is_checked      = $checkbox.prop('checked');
 
             $checkbox_field.val(is_checked ? $checkbox_field.data('checked') : $checkbox_field.data('unchecked'));
           });
 
-          $et_contact_form.submit(function(event) {
+          $et_contact_form.on('submit', function(event) {
             event.preventDefault();
 
             const $this_contact_form = $(this);
@@ -3472,7 +3471,7 @@ const _post_id = et_pb_custom.page_id;
 
                 let this_id       = $this_el.attr('id');
                 let this_val      = $this_el.val();
-                let this_label    = $this_el.siblings('label:first').text();
+                let this_label    = $this_el.siblings('label').first().text();
                 let field_type    = typeof $this_el.data('field_type') !== 'undefined' ? $this_el.data('field_type') : 'text';
                 let required_mark = typeof $this_el.data('required_mark') !== 'undefined' ? $this_el.data('required_mark') : 'not_required';
                 let original_id   = typeof $this_el.data('original_id') !== 'undefined' ? $this_el.data('original_id') : '';
@@ -3484,7 +3483,7 @@ const _post_id = et_pb_custom.page_id;
                   if (0 !== $this_wrapper.find('input[type="radio"]').length) {
                     field_type = 'radio';
 
-                    const $firstRadio = $this_wrapper.find('input[type="radio"]:first');
+                    const $firstRadio = $this_wrapper.find('input[type="radio"]').first();
 
                     required_mark = typeof $firstRadio.data('required_mark') !== 'undefined' ? $firstRadio.data('required_mark') : 'not_required';
 
@@ -3495,7 +3494,7 @@ const _post_id = et_pb_custom.page_id;
                   }
 
                   this_label  = $this_wrapper.find('.et_pb_contact_form_label').text();
-                  this_id     = $this_wrapper.find('input[type="radio"]:first').attr('name');
+                  this_id     = $this_wrapper.find('input[type="radio"]').first().attr('name');
                   original_id = $this_wrapper.attr('data-id');
 
                   if (0 === $this_wrapper.find('input[type="radio"]:checked').length) {
@@ -3631,6 +3630,9 @@ const _post_id = et_pb_custom.page_id;
                   // set new digits for captcha
                   $captcha_field.data('first_digit', first_digit);
                   $captcha_field.data('second_digit', second_digit);
+
+                  // clear captcha input value
+                  $captcha_field.val('');
 
                   // regenerate captcha on page
                   $this_contact_form.find('.et_pb_contact_captcha_question').empty().append(`${first_digit} + ${second_digit}`);
@@ -3770,7 +3772,7 @@ const _post_id = et_pb_custom.page_id;
         });
       };
 
-      $('.et_pb_post .et_pb_video_overlay, .et_pb_video .et_pb_video_overlay, .et_pb_video_wrap .et_pb_video_overlay').click(function() {
+      $('.et_pb_post .et_pb_video_overlay, .et_pb_video .et_pb_video_overlay, .et_pb_video_wrap .et_pb_video_overlay').on('click', function() {
         const $this = $(this);
 
         et_pb_play_overlayed_video($this);
@@ -3795,7 +3797,7 @@ const _post_id = et_pb_custom.page_id;
 
           const ratio = el_width / el_height;
 
-          const $video_elements = $this_el.find('.mejs-video, video, object').css('margin', 0);
+          const $video_elements = $this_el.find('.mejs-video, video, object').css('margin', '0px');
 
           const $container = $this_el.closest('.et_pb_section_video').length
             ? $this_el.closest('.et_pb_section_video')
@@ -3862,7 +3864,7 @@ const _post_id = et_pb_custom.page_id;
         const $video_width          = $el.width() / 2;
         const $video_width_negative = 0 - $video_width;
 
-        $el.css('margin-left', $video_width_negative);
+        $el.css('margin-left', `${$video_width_negative}px`);
       };
 
       function et_fix_slider_height($slider) {
@@ -3931,7 +3933,7 @@ const _post_id = et_pb_custom.page_id;
             // Reset the height so that it falls back to the default padding for the content.
             $slide_containers.css('height', '');
           } else {
-            $slide_containers.css('height', max_height + image_margin);
+            $slide_containers.css('height', `${max_height + image_margin}px`);
           }
 
           // remove temp class after getting the slider height
@@ -3996,11 +3998,11 @@ const _post_id = et_pb_custom.page_id;
         }
       });
 
-      $et_pb_newsletter_button.click(function(event) {
+      $et_pb_newsletter_button.on('click', function(event) {
         et_pb_submit_newsletter($(this), event);
       });
 
-      $et_pb_newsletter_input.keypress(function(event){
+      $et_pb_newsletter_input.on('keypress', function(event){
         const keyCode = event.which || event.keyCode;
         if (13 === keyCode) {
           const $submit = $(this).closest('form').find('.et_pb_newsletter_button');
@@ -4013,7 +4015,7 @@ const _post_id = et_pb_custom.page_id;
         .find('input[type=checkbox]')
         .on('change', function() {
           const $checkbox       = $(this);
-          const $checkbox_field = $checkbox.siblings('input[type=text]:first');
+          const $checkbox_field = $checkbox.siblings('input[type=text]').first();
           const is_checked      = $checkbox.prop('checked');
 
           $checkbox_field.val(is_checked ? $checkbox_field.data('checked') : $checkbox_field.data('unchecked'));
@@ -4111,7 +4113,7 @@ const _post_id = et_pb_custom.page_id;
 
           let this_id       = $this_el.data('id');
           let this_val      = $this_el.val();
-          let this_label    = $this_el.siblings('label:first').text();
+          let this_label    = $this_el.siblings('label').first().text();
           const field_type  = typeof $this_el.data('field_type') !== 'undefined' ? $this_el.data('field_type') : 'text';
           let required_mark = typeof $this_el.data('required_mark') !== 'undefined' ? $this_el.data('required_mark') : 'not_required';
           const original_id = typeof $this_el.data('original_id') !== 'undefined' ? $this_el.data('original_id') : '';
@@ -4125,7 +4127,7 @@ const _post_id = et_pb_custom.page_id;
           // radio field properties adjustment
           if ('radio' === field_type) {
             if (0 !== $this_wrapper.find('input[type="radio"]').length) {
-              const $firstRadio = $this_wrapper.find('input[type="radio"]:first');
+              const $firstRadio = $this_wrapper.find('input[type="radio"]').first();
 
               required_mark = typeof $firstRadio.data('required_mark') !== 'undefined' ? $firstRadio.data('required_mark') : 'not_required';
 
@@ -4420,12 +4422,12 @@ const _post_id = et_pb_custom.page_id;
 
             const $testimonial       = $(this);
             const $portrait          = $testimonial.find('.et_pb_testimonial_portrait');
-            const portrait_width     = $portrait.outerWidth(true);
+            const portrait_width     = $portrait.outerWidth(true) || 0;
             const $testimonial_descr = $testimonial.find('.et_pb_testimonial_description');
             const $outer_column      = $testimonial.closest('.et_pb_column');
 
             if (portrait_width > 90) {
-              $portrait.css('padding-bottom', '0');
+              $portrait.css('padding-bottom', '0px');
               $portrait.width('90px');
               $portrait.height('90px');
             }
@@ -4437,7 +4439,7 @@ const _post_id = et_pb_custom.page_id;
 							|| $outer_column.hasClass('et_pb_column_2_5')
 							|| $outer_column.hasClass('et_pb_column_3_8')) ? portrait_width : 0;
 
-            $testimonial_descr.css('margin-left', testimonial_indent);
+            $testimonial_descr.css('margin-left', `${testimonial_indent}px`);
           });
         } else if (window_width > 767) {
           $('.et_pb_testimonial').each(function() {
@@ -4447,7 +4449,7 @@ const _post_id = et_pb_custom.page_id;
 
             const $testimonial       = $(this);
             const $portrait          = $testimonial.find('.et_pb_testimonial_portrait');
-            const portrait_width     = $portrait.outerWidth(true);
+            const portrait_width     = $portrait.outerWidth(true) || 0;
             const $testimonial_descr = $testimonial.find('.et_pb_testimonial_description');
             const $outer_column      = $testimonial.closest('.et_pb_column');
             const testimonial_indent = ! ($outer_column.hasClass('et_pb_column_1_4')
@@ -4456,7 +4458,7 @@ const _post_id = et_pb_custom.page_id;
 							|| $outer_column.hasClass('et_pb_column_2_5')
 							|| $outer_column.hasClass('et_pb_column_3_8')) ? portrait_width : 0;
 
-            $testimonial_descr.css('margin-left', testimonial_indent);
+            $testimonial_descr.css('margin-left', `${testimonial_indent}px`);
           });
         } else {
           $('.et_pb_testimonial_description').removeAttr('style');
@@ -4680,7 +4682,7 @@ const _post_id = et_pb_custom.page_id;
         });
 
         if ('slideTop' === animation_style || 'slideBottom' === animation_style) {
-          $element.css('left', 0);
+          $element.css('left', '0px');
         }
 
         let intensity_css          = {};
@@ -5511,7 +5513,7 @@ const _post_id = et_pb_custom.page_id;
                 }
               }
 
-              $goal_button.click(() => {
+              $goal_button.on('click', () => {
                 if ($et_pb_ab_goal.hasClass('et_pb_comments_module') && ! et_pb_ab_logged_status[test.post_id].con_goal) {
                   et_pb_set_cookie(365, `et_pb_ab_comment_log_${test.post_id}${test.test_id}=true`);
                   return;
@@ -5521,7 +5523,7 @@ const _post_id = et_pb_custom.page_id;
               });
             }
           } else {
-            $et_pb_ab_goal.click(() => {
+            $et_pb_ab_goal.on('click', () => {
               if ($et_pb_ab_goal.hasClass('et_pb_shop') && ! et_pb_ab_logged_status[test.post_id].con_goal) {
                 et_pb_set_cookie(365, `et_pb_ab_shop_log=${test.post_id}_${et_ab_subject_id}_${test.test_id}`);
               }
@@ -5722,7 +5724,7 @@ const _post_id = et_pb_custom.page_id;
 
         fullscreen_section_timeout[section_index] = setTimeout(() => {
           const $body                    = $('body');
-          const $tb_header               = $('.et-l--header:first');
+          const $tb_header               = $('.et-l--header').first();
           const tb_header_height         = $tb_header.length > 0 ? $tb_header.height() : 0;
           const has_section              = $this_section.length;
           const this_section_index       = $this_section.index('.et_pb_fullwidth_header');
@@ -5933,7 +5935,7 @@ const _post_id = et_pb_custom.page_id;
 
       window.et_calculate_fullscreen_section_size = function() {
         $('section.et_pb_fullscreen').each(function() {
-          $.proxy(et_calc_fullscreen_section, $(this))();
+          et_calc_fullscreen_section.bind($(this))();
         });
 
         if (isBuilder) {
@@ -5970,40 +5972,40 @@ const _post_id = et_pb_custom.page_id;
         if ($this_parallax.hasClass('et_pb_parallax_css')) {
           // Register faux CSS Parallax effect for builder modes with top window scroll
           if ($('body').hasClass('et-fb') || isTB || isBlockLayoutPreview) {
-            $.proxy(et_apply_builder_css_parallax, $this_parent)();
+            et_apply_builder_css_parallax.bind($this_parent)();
             if (isTB) {
               top_window.jQuery('#et-fb-app')
-                .on('scroll.etCssParallaxBackground', $.proxy(et_apply_builder_css_parallax, $this_parent))
-                .on('resize.etCssParallaxBackground', $.proxy(window.debounced_et_apply_builder_css_parallax, $this_parent));
+                .on('scroll.etCssParallaxBackground', et_apply_builder_css_parallax.bind($this_parent))
+                .on('resize.etCssParallaxBackground', window.debounced_et_apply_builder_css_parallax.bind($this_parent));
             } else {
               $(window)
-                .on('scroll.etCssParallaxBackground', $.proxy(et_apply_builder_css_parallax, $this_parent))
-                .on('resize.etCssParallaxBackground', $.proxy(window.debounced_et_apply_builder_css_parallax, $this_parent));
+                .on('scroll.etCssParallaxBackground', et_apply_builder_css_parallax.bind($this_parent))
+                .on('resize.etCssParallaxBackground', window.debounced_et_apply_builder_css_parallax.bind($this_parent));
             }
           }
 
           return;
         }
 
-        $.proxy(et_parallax_set_height, $this_parent)();
-        $.proxy(et_apply_parallax, $this_parent)();
+        et_parallax_set_height.bind($this_parent)();
+        et_apply_parallax.bind($this_parent)();
 
         if (isTB) {
-          top_window.jQuery('#et-fb-app').on('scroll.etTrueParallaxBackground', $.proxy(et_apply_parallax, $this_parent));
+          top_window.jQuery('#et-fb-app').on('scroll.etTrueParallaxBackground', et_apply_parallax.bind($this_parent));
         } else {
-          $(window).on('scroll.etTrueParallaxBackground', $.proxy(et_apply_parallax, $this_parent));
+          $(window).on('scroll.etTrueParallaxBackground', et_apply_parallax.bind($this_parent));
         }
-        $(window).on('resize.etTrueParallaxBackground', $.proxy(et_pb_debounce(et_parallax_set_height, 100), $this_parent));
-        $(window).on('resize.etTrueParallaxBackground', $.proxy(et_pb_debounce(et_apply_parallax, 100), $this_parent));
+        $(window).on('resize.etTrueParallaxBackground', et_pb_debounce(et_parallax_set_height, 100).bind($this_parent));
+        $(window).on('resize.etTrueParallaxBackground', et_pb_debounce(et_apply_parallax, 100).bind($this_parent));
 
-        $this_parent.find('.et-learn-more .heading-more').click(() => {
+        $this_parent.find('.et-learn-more .heading-more').on('click', () => {
           setTimeout(() => {
-            $.proxy(et_parallax_set_height, $this_parent)();
+            et_parallax_set_height.bind($this_parent)();
           }, 300);
         });
       };
 
-      $(window).resize(() => {
+      $(window).on('resize', () => {
         const window_width                = $et_window.width();
         const et_container_css_width      = $et_container.css('width');
         const et_container_width_in_pixel = (typeof et_container_css_width !== 'undefined') ? et_container_css_width.substr(- 1, 1) !== '%' : '';
@@ -6232,7 +6234,7 @@ const _post_id = et_pb_custom.page_id;
       if (window.et_load_event_fired) {
         et_pb_window_load_scripts();
       } else {
-        $(window).load(() => {
+        $(window).on('load', () => {
           et_pb_window_load_scripts();
         });
       }
@@ -6307,8 +6309,11 @@ const _post_id = et_pb_custom.page_id;
 
         // construct the selector for current module
         $.each(module_classes, (index, value) => {
-          // skip animation classes so no wrong href is formed afterwards
-          if ($.inArray(value, animation_classes) !== - 1 || 'et_had_animation' === value) {
+          // lazyload and lazyloaded classes are needed for compatibility with EWWW Image Optimizer
+          const skip_classes = animation_classes.concat(['et_had_animation', 'lazyload', 'lazyloaded']);
+
+          // skip animation and other 3rd party classes so no wrong href is formed afterwards
+          if (skip_classes.includes(value)) {
             return;
           }
 
@@ -6406,7 +6411,7 @@ const _post_id = et_pb_custom.page_id;
         const has_main_header       = $main_header.length;
         const main_header_height    = has_main_header && is_fixed_nav && is_desktop_view ? $main_header.height() : 0;
         const overall_header_height = wpadminbar_height + top_header_height + main_header_height;
-        // Calculate the scroll to element top value based on the element top offset - overall header height - 50. 
+        // Calculate the scroll to element top value based on the element top offset - overall header height - 50.
         // The element should be positioned 50px from the top of the viewport or the header (if fixed).
         const scroll_to_position    = $current_module.offset().top - overall_header_height - 50;
 
@@ -6519,7 +6524,7 @@ const _post_id = et_pb_custom.page_id;
         if (! disabled_button) {
           // Reset reverse input padding.
           $input_field.css(reverse_input_padding, '');
-          $input_field.css(input_padding, buttonWidth + 10);
+          $input_field.css(input_padding, `${buttonWidth + 10}px`);
         }
 
         // reset the button position back to default
@@ -6867,7 +6872,7 @@ const _post_id = et_pb_custom.page_id;
           const $et_pb_shop    = $(this);
           const $et_shop_image = $et_pb_shop.find('.et_shop_image');
 
-          $et_shop_image.mouseover(function() {
+          $et_shop_image.on('mouseover', function() {
             const $this          = $(this);
             const $et_li_wrapper = $this.parents().eq(1);
 
@@ -6877,7 +6882,7 @@ const _post_id = et_pb_custom.page_id;
 
             $price.addClass('hover');
             $title.addClass('hover');
-          }).mouseout(function() {
+          }).on('mouseout', function() {
             const $this          = $(this);
             const $et_li_wrapper = $this.parents().eq(1);
 
@@ -6925,7 +6930,7 @@ const _post_id = et_pb_custom.page_id;
 
   if (window.et_pb_custom && window.et_pb_custom.is_ab_testing_active && 'yes' === window.et_pb_custom.is_cache_plugin_active) {
     // update the window.et_load_event_fired variable to initiate the scripts properly
-    $(window).load(() => {
+    $(window).on('load', () => {
       window.et_load_event_fired = true;
     });
 
@@ -7004,7 +7009,7 @@ const _post_id = et_pb_custom.page_id;
     if (isDiviTheme || isExtraTheme) {
       et_pb_fix_scroll_to_anchor_position();
     }
-    
+
 
     // Hover transition are disabled for section dividers to prevent visual glitches while document is loading,
     // we can enable them again now. Also, execute unwanted divider spacing
@@ -7019,7 +7024,7 @@ const _post_id = et_pb_custom.page_id;
     }, 0);
   });
 
-  $(window).load(() => {
+  $(window).on('load', () => {
     const $body = $('body');
 
     // set load event here because safari sometimes will not run load events registered on et_pb_init_modules.
@@ -7064,7 +7069,7 @@ const _post_id = et_pb_custom.page_id;
     // Reinit Star Ratings in Woo Modules.
     // Deafuilt Woocommerce scripts do not init Star Ratings correctly
     // if there are more than 1 place with stars on page
-    // Run this on .load event after woocommerce modules are ready and processed.
+    // Run this on .on('load') event after woocommerce modules are ready and processed.
     if ($('.et_pb_module #rating').length > 0) {
       $('.et_pb_module #rating').each(function() {
         window.et_pb_init_woo_star_rating($(this));
@@ -7113,7 +7118,7 @@ const _post_id = et_pb_custom.page_id;
 
   // Handle cases where builder modules are not initially visible and produce sizing
   // issues as a result (e.g. slider module inside popups, accordions etc.).
-  $(document).ready(() => {
+  $(() => {
     if (MutationObserver === undefined) {
       // Bail if MutationObserver is not supported by the user agent.
       return;
@@ -7184,11 +7189,13 @@ const _post_id = et_pb_custom.page_id;
 
   // Menu module.
   function menuModuleOpenSearch($module) {
-    const $menu    = $module.find('.et_pb_menu__wrap:first');
-    const $search  = $module.find('.et_pb_menu__search-container:first');
-    const $input   = $module.find('.et_pb_menu__search-input:first');
-    const $logo    = $module.find('.et_pb_row > .et_pb_menu__logo-wrap:first, .et_pb_menu_inner_container > .et_pb_menu__logo-wrap:first');
-    const isMobile = $(window).width() <= 980;
+    const $menu       = $module.find('.et_pb_menu__wrap').first();
+    const $search     = $module.find('.et_pb_menu__search-container').first();
+    const $input      = $module.find('.et_pb_menu__search-input').first();
+    const $fwMenuLogo = $module.find('.et_pb_row > .et_pb_menu__logo-wrap').first();
+    const $menuLogo   = $module.find('.et_pb_menu_inner_container > .et_pb_menu__logo-wrap').first();
+    const $logo       = $fwMenuLogo.add($menuLogo);
+    const isMobile    = $(window).width() <= 980;
 
     if ($search.hasClass('et_pb_is_animating')) {
       return;
@@ -7202,21 +7209,21 @@ const _post_id = et_pb_custom.page_id;
     $search.removeClass('et_pb_menu__search-container--hidden et_pb_menu__search-container--disabled').addClass('et_pb_menu__search-container--visible et_pb_is_animating');
 
     // Adjust spacing based on layout and the logo used.
-    $search.css('padding-top', 0);
+    $search.css('padding-top', '0px');
     if ($module.hasClass('et_pb_menu--style-left_aligned') || $module.hasClass('et_pb_fullwidth_menu--style-left_aligned')) {
-      $search.css('padding-left', $logo.width());
+      $search.css('padding-left', `${$logo.width()}px`);
     } else {
       const logoHeight = $logo.height();
 
-      $search.css('padding-left', 0);
+      $search.css('padding-left', '0px');
       if (isMobile || $module.hasClass('et_pb_menu--style-centered') || $module.hasClass('et_pb_fullwidth_menu--style-centered')) {
         // 30 = logo margin-bottom.
-        $search.css('padding-top', logoHeight > 0 ? logoHeight + 30 : 0);
+        $search.css('padding-top', `${(logoHeight > 0 ? logoHeight + 30 : 0)}px`);
       }
     }
 
-    $input.css('font-size', $module.find('.et-menu-nav li a:first').css('font-size'));
-    $input.focus();
+    $input.css('font-size', $module.find('.et-menu-nav li a').first().css('font-size'));
+    $input.trigger('focus');
 
     setTimeout(() => {
       $menu.addClass('et_pb_no_animation');
@@ -7225,9 +7232,9 @@ const _post_id = et_pb_custom.page_id;
   }
 
   function menuModuleCloseSearch($module) {
-    const $menu   = $module.find('.et_pb_menu__wrap:first');
-    const $search = $module.find('.et_pb_menu__search-container:first');
-    const $input  = $module.find('.et_pb_menu__search-input:first');
+    const $menu   = $module.find('.et_pb_menu__wrap').first();
+    const $search = $module.find('.et_pb_menu__search-container').first();
+    const $input  = $module.find('.et_pb_menu__search-input').first();
 
     if ($search.hasClass('et_pb_is_animating')) {
       return;
@@ -7235,7 +7242,7 @@ const _post_id = et_pb_custom.page_id;
 
     $menu.removeClass('et_pb_menu__wrap--hidden').addClass('et_pb_menu__wrap--visible');
     $search.removeClass('et_pb_menu__search-container--visible').addClass('et_pb_menu__search-container--hidden et_pb_is_animating');
-    $input.blur();
+    $input.trigger('blur');
 
     setTimeout(() => {
       $search.removeClass('et_pb_is_animating').addClass('et_pb_menu__search-container--disabled');
@@ -7243,13 +7250,13 @@ const _post_id = et_pb_custom.page_id;
   }
 
   function menuModuleCloneInlineLogo($module) {
-    const $logo = $module.find('.et_pb_menu__logo-wrap:first');
+    const $logo = $module.find('.et_pb_menu__logo-wrap').first();
 
     if (0 === $logo.length) {
       return;
     }
 
-    const $menu = $module.find('.et_pb_menu__menu:first');
+    const $menu = $module.find('.et_pb_menu__menu').first();
 
     if (0 === $menu.length || $menu.find('.et_pb_menu__logo').length > 0) {
       return;
@@ -7276,7 +7283,7 @@ const _post_id = et_pb_custom.page_id;
     menuModuleCloseSearch($(this).closest('.et_pb_module'));
   });
 
-  $(document).ready(() => {
+  $(() => {
     $('.et_pb_menu--style-inline_centered_logo, .et_pb_fullwidth_menu--style-inline_centered_logo').each(function() {
       menuModuleCloneInlineLogo($(this));
     });
@@ -7297,7 +7304,7 @@ const _post_id = et_pb_custom.page_id;
     }
   });
 
-  $(document).on('ready', window.et_pb_reposition_menu_module_dropdowns);
+  document.addEventListener('DOMContentLoaded', window.et_pb_reposition_menu_module_dropdowns);
   $(window).on('resize', window.et_pb_reposition_menu_module_dropdowns);
 
   // Muti View Data Handler (Responsive + Hover)
@@ -8194,7 +8201,7 @@ const _post_id = et_pb_custom.page_id;
         et_multi_view.init(screenMode);
       });
     } else {
-      $(document).ready(() => {
+      $(() => {
         et_multi_view.init();
       });
 
@@ -8222,7 +8229,7 @@ const _post_id = et_pb_custom.page_id;
   etMultiViewBootstrap();
 
   if (isBuilder) {
-    $(document).ready(() => {
+    $(() => {
       $(document).on('submit', '.et-fb-root-ancestor-sibling form', event => {
         event.preventDefault();
       });

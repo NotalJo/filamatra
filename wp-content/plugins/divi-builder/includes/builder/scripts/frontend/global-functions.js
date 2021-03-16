@@ -7,7 +7,7 @@ import { getClosestStickyModuleOffsetTop } from '../utils/sticky';
 (function($) {
   const isBlockLayoutPreview = $('body').hasClass('et-block-layout-preview');
 
-  const $tbHeader = $('.et-l--header:first');
+  const $tbHeader = $('.et-l--header').first();
   let tbHeaderMostLengthyFixedSectionHeight = 0;
 
   // Modification of underscore's _.debounce()
@@ -130,11 +130,11 @@ import { getClosestStickyModuleOffsetTop } from '../utils/sticky';
         }
         $et_current_input.val(et_comment_label_value);
       }
-    }).bind('focus', function() {
+    }).on('focus', function() {
       let et_label_text = jQuery(this).siblings('label').text();
       if (jQuery(this).siblings('span.required').length) et_label_text += jQuery(this).siblings('span.required').text();
       if (jQuery(this).val() === et_label_text) jQuery(this).val('');
-    }).bind('blur', function() {
+    }).on('blur', function() {
       let et_label_text = jQuery(this).siblings('label').text();
       if (jQuery(this).siblings('span.required').length) et_label_text += jQuery(this).siblings('span.required').text();
       if ('' === jQuery(this).val()) jQuery(this).val(et_label_text);
@@ -160,7 +160,7 @@ import { getClosestStickyModuleOffsetTop } from '../utils/sticky';
       $cloned_nav = $this_menu.find('> ul');
       $cloned_nav.find('.menu_slide').remove();
       $cloned_nav.find('.et_pb_menu__logo-slot').remove();
-      $cloned_nav.find('li:first').addClass('et_first_mobile_item');
+      $cloned_nav.find('li').first().addClass('et_first_mobile_item');
 
       $cloned_nav.find('a').on('click', function() {
         $(this).parents('.et_mobile_menu').siblings('.mobile_menu_bar').trigger('click');
@@ -209,9 +209,9 @@ import { getClosestStickyModuleOffsetTop } from '../utils/sticky';
     $('section.et_pb_fullscreen').each(function() {
       const $this_section = $(this);
 
-      $.proxy(et_calc_fullscreen_section, $this_section)();
+      et_calc_fullscreen_section.bind($this_section);
 
-      $et_window.on('resize', $.proxy(et_calc_fullscreen_section, $this_section));
+      $et_window.on('resize', et_calc_fullscreen_section.bind($this_section));
     });
   };
 
@@ -342,7 +342,7 @@ import { getClosestStickyModuleOffsetTop } from '../utils/sticky';
 
       if (0 !== max_height) {
         // set the height of tabs container based on the height of the tallest tab
-        $tab_controls.children('li').css('height', max_height);
+        $tab_controls.children('li').css('height', `${max_height}px`);
       }
     });
   };
@@ -375,9 +375,9 @@ import { getClosestStickyModuleOffsetTop } from '../utils/sticky';
         return;
       }
 
-      $et_menu.find('li').hover(function() {
+      $et_menu.find('li').on('mouseenter', function() {
         window.et_pb_toggle_nav_menu($(this), 'open');
-      }, function() {
+      }).on('mouseleave', function() {
         window.et_pb_toggle_nav_menu($(this), 'close');
       });
 
@@ -540,7 +540,7 @@ import { getClosestStickyModuleOffsetTop } from '../utils/sticky';
   window.et_pb_menu_inject_item = function(menu, index, fromTheBeginning) {
     fromTheBeginning = undefined === fromTheBeginning ? true : fromTheBeginning;
     index            = Math.max(index, 0);
-    const $list      = $(menu).find('nav > ul:first');
+    const $list      = $(menu).find('nav > ul').first();
 
     if (0 === $list.length) {
       return null;
@@ -581,7 +581,7 @@ import { getClosestStickyModuleOffsetTop } from '../utils/sticky';
     const $menus = menus ? $(menus) : $('.et_pb_menu, .et_pb_fullwidth_menu');
 
     $menus.each(function() {
-      const $row = $(this).find('.et_pb_row:first');
+      const $row = $(this).find('.et_pb_row').first();
 
       if (0 === $row.length) {
         return true; // = continue.
@@ -589,7 +589,7 @@ import { getClosestStickyModuleOffsetTop } from '../utils/sticky';
 
       const offset      = $row.offset().top;
       const moduleClass = $(this).attr('class').replace(/^.*?(et_pb(?:_fullwidth)?_menu_\d+[^\s]*).*$/i, '$1');
-      const isUpwards   = $(this).find('.et_pb_menu__menu ul:first').hasClass('upwards');
+      const isUpwards   = $(this).find('.et_pb_menu__menu ul').first().hasClass('upwards');
       const selector    = '.et_pb_menu__menu > nav > ul > li.mega-menu.menu-item-has-children';
       let css           = '';
 
@@ -611,7 +611,7 @@ import { getClosestStickyModuleOffsetTop } from '../utils/sticky';
         }
       });
 
-      let $style = $(`style.et-menu-style-${moduleClass}:first`);
+      let $style = $(`style.et-menu-style-${moduleClass}`).first();
 
       if (0 === $style.length) {
         $style = $('<style></style>');
